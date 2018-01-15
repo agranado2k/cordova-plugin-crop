@@ -40,14 +40,23 @@ public class CropPlugin extends CordovaPlugin {
 
           cordova.setActivityResultCallback(this);
           Crop crop = Crop.of(this.inputUri, this.outputUri);
+
+          JSONObject err = new JSONObject();
+          err.put("targetHeight", String.valueOf(targetHeight));
+          err.put("targetWidth", String.valueOf(targetWidth));
+
           if(targetHeight != -1 && targetWidth != -1) {
+              err.put("set with MaxSize");
               crop.withMaxSize(targetWidth, targetHeight);
               if(targetWidth == targetHeight) {
+                  err.put("as Square 1");
                   crop.asSquare();
               }
           } else {
+              err.put("as Square 2");
               crop.asSquare();
           }
+          this.callbackContext.error(err);
           crop.start(cordova.getActivity());
           return true;
       }
